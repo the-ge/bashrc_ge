@@ -1,0 +1,1196 @@
+#!/bin/bash
+
+export TMP_MEIN="/media/tmp/tmp"
+export WEB_STORE="/media/dev/www"
+export DEV_STORE="/media/dev/store"
+export DEV_DOCKER_HOME="$DEV_STORE/docker"
+export DEV_DOMAINS_LIST_PATH="$DEV_STORE/domains.csv"
+export TRAEFIK_NETWORK='t'
+
+alias chmod='chmod --preserve-root'
+alias gpg="gpg --homedir $GNUPGNOME"
+alias gpg2="gpg2 --homedir $GNUPGNOME"
+alias svn="svn --config-dir $XDG_CONFIG_HOME/subversion"
+alias wget="wget --hsts-file=$XDG_CACHE_HOME/wget-hsts"
+alias java="java -Duser.home=$XDG_DATA_HOME/java"
+alias claws-mail="/usr/bin/claws-mail --alternate-config-dir $XDG_CONFIG_HOME/claws-mail $@"
+alias kderestart="kquitapp5 plasmashell && kstart5 plasmashell &"
+alias w32="LC_ALL=en_US.utf8 WINEPREFIX=/media/cache/wine/w32"
+alias w64="LC_ALL=en_US.utf8 WINEPREFIX=/media/cache/wine/w64"
+
+black_ebg='\e[0;40m'
+black_txt='\e[0;30m'
+blue_ebg='\e[0;44m'
+blue_p="\[$(tput setaf 4)\]"
+blue_txt='\e[0;34m'
+cyan_ebg='\e[0;46m'
+cyan_p="\[$(tput setaf 6)\]"
+cyan_txt='\e[0;36m'
+gray_p="\[$(tput setaf 240)\]"
+green_ebg='\e[0;42m'
+green_p="\[$(tput setaf 2)\]"
+green_txt='\e[0;32m'
+magenta_ebg='\e[0;45m'
+magenta_p="\[$(tput setaf 5)\]"
+magenta_txt='\e[0;35m'
+red_ebg='\e[0;41m'
+red_p="\[$(tput setaf 1)\]"
+red_txt='\e[0;31m'
+white_ebg='\e[0;47m'
+white_p="\[$(tput setaf 7)\]"
+white_txt='\e[0;37m'
+whitesmoke_p="\[$(tput setaf 248)\]"
+yellow_ebg='\e[0;43m'
+yellow_p="\[$(tput setaf 3)\]"
+yellow_txt='\e[0;33m'
+yellowsmoke_p="\[$(tput setaf 220)\]"
+
+rste='\e[0m'
+rstp="\[$(tput sgr0)\]"
+
+case "$TERM" in
+xterm*|rxvt*)
+    #PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    #PS1="\[\033[0;37m\]\342\224\214\342\224\200\$([[ \$? != 0 ]] && echo \"[\[\033[1;31m\]\342\234\227\[\033[0;37m\]]\342\224\200\")[$(if [[ ${EUID} == 0 ]]; then echo '\[\033[1;31m\]\h'; else echo '\[\033[0;33m\]\u\[\033[0;37m\]@\[\033[0;96m\]\h'; fi)\[\033[0;37m\]]\342\224\200[\[\033[1;32m\]\w\[\033[0;37m\]]\n\[\033[0;37m\]\342\224\224\342\224\200\342\224\200\342\225\274 \[\033[0m\]"
+    #PS1="┌─[\`if [ \$? = 0 ]; then echo \[\e[32m\]✔\[\e[0m\]; else echo \[\e[31m\]✘\[\e[0m\]; fi\`]───[\[\e[01;49;39m\]\u\[\e[00m\]\[\e[01;49;39m\]@\H\[\e[00m\]]───[\[\e[1;49;34m\]\W\[\e[0m\]]───[\[\e[1;49;39m\]\$(ls | wc -l) files, \$(ls -lah | grep -m 1 total | sed 's/total //')\[\e[0m\]]\n└───▶ "
+    #PS1="\[\e[1;34m\]$\[\e[0m\] "
+    #RCol='\033[0m'; Gre='\033[32m'; Red='\033[31m'; Blu='\033[34m'; Yel='\033[33m'; PS1="${RCol}┌─[\`if [ \$? = 0 ]; then echo "${Gre}"; else echo "${Red}"; fi\`\t\[${RCol}\] \[${Blu}\]\h\[${RCol}\] \[${Yel}\]\w\[${RCol}\]]\n└─╼ "
+    #PS1="\[\033[38;5;38m\]\u\[\]\[\033[38;5;15m\]@\[\]\[\033[38;5;172m\]\h\[\]\[\033[38;5;15m\] \[\]\w\[\]\n\[\]\[\033[38;5;41m\]\$\[\]\[\033[38;5;15m\] \[\]"
+    #PS1="\[\033[1;33m\][\[\033[1;36m\]\u\[\033[0m\]@\[\033[1;32m\]\h\[\033[0m\]:\[\033[1;31m\]\w\[\033[1;33m\]] \[\033[0m\]?"
+    #PS1="\[\033[00;30;44m\]\u\[\033[00;30;47m\]>\[\033[00;30;42m\]\w\[\033[00;30;47m\]>\[\033[00m\]"
+    #PS1='\e[31m#\#\e[0m\e[32m(\w)$\e[0m '
+    #PS1="\$(rv=\$?; if [ \$rv != 0 ]; then echo \"\[\033[01;31m\]returned \$rv\n\n\"; fi)\$(jc=\$(jobs -p |wc -l); if [ \$jc != 0 ]; then echo \"\[\033[00;37m\]\n\$jc jobs\"; fi)\$(if [ \"\$PROMPT_DATE\" ]; then echo \"\[\033[00;37m\]\"; date \"+%Y-%b-%d %T %Z\"; fi)\n${debian_chroot:+($debian_chroot)}\[\033["$PROMPT_COLOR_USER"\]\u\[\033[00m\]@\[\033["$PROMPT_COLOR_HOST"\]\H\[\033[00m\]:\[\033["$PROMPT_COLOR_WORKING_DIR"\]\w\[\033[00m\]\$ "
+    if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+        PS1="\n\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]${magenta_p}🔑${rstp} "
+    else
+        PS1="\n\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]${green_p}▶${rstp} "
+    fi
+    ;;
+*)
+    ;;
+esac
+
+dls()
+{
+    local sep="----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    echo "$sep"
+    docker ps -a
+    echo "$sep"
+    docker images
+    echo "$sep"
+    docker network ls
+    echo "$sep"
+    docker volume ls
+    echo "$sep"
+}
+
+drm()
+{
+    echo "Pruning Docker containers and volumes..."
+    docker system prune --force --volumes
+}
+
+don()
+{
+
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+don  --  starts a Docker project containers using docker-compose.
+
+EXAMPLE:
+    - starts a LAMP server with PHP 7.0 and MariaDB 10.1:
+       don 70101
+
+    - starts tenita.e0 (codes defined in the function):
+       don te0
+
+HELP
+
+    return
+
+    fi
+
+    composeEnv "start" "$@"
+    [[ "$?" == 0 ]] && dls
+}
+
+doff()
+{
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+doff  --  stops containers belonging to a Docker project started using docker-compose.
+
+EXAMPLE:
+    - stops a LAMP server with PHP 7.0 and MariaDB 10.1:
+       doff 70101
+
+    - stops tenita.e0 (codes defined in the function):
+       doff te0
+
+HELP
+
+    return
+
+    fi
+
+    case "$1" in
+        'all')
+            echo ""
+            echo "Stopping containers..."
+            docker ps -q | xargs docker stop
+            echo ""
+            docker container prune --force
+            echo ""
+            docker network prune --force
+            echo ""
+            docker volume prune --force
+            echo ""
+            ;;
+        *)
+            composeEnv "stop" "$1"
+            ;;
+    esac
+
+    dls
+}
+
+composeEnv()
+{
+
+    case "$1" in
+        'start')
+            local command_args='up -d --no-recreate'
+            local compose_action='Starting'
+            ;;
+        'stop')
+            local command_args='down'
+            local compose_action='Stopping'
+            ;;
+    esac
+
+    echo -e "${cyan_txt}"
+    printf "${compose_action} containers in ${magenta_txt}'$2'${cyan_txt} Docker composition...\n"
+    echo -e "${rste}"
+
+    export COMPOSE_IGNORE_ORPHANS=1
+    export COMPOSE_PATH_SEPARATOR=':'
+
+    local outcome='fail'
+    if [[ $2 =~ [^[:digit:]] ]]; then
+        local project_data=$(getPrj $2)
+        if [ -n "$project_data" ]; then
+            pon
+            echo "-----------"
+            getDedicatedCfg "$project_data" "$command_args"
+            [[ "$?" == 0 ]] && outcome='success'
+        fi
+    else
+        getSharedCfg "$2" "$command_args"
+        [[ "$?" == 0 ]] && outcome='success'
+    fi
+
+    echo ""
+    if [[ $outcome == 'success' ]]; then
+        printf "${cyan_txt}Finished "
+    else
+        printf "${red_txt}ERROR${cyan_txt} while "
+    fi
+    printf "${compose_action}" | tr '[:upper:]' '[:lower:]'
+    printf " containers in '${magenta_txt}$2${cyan_txt}' Docker composition!"
+    echo -e "${rste}\n\n"
+    if [[ $outcome != 'success' ]]; then
+        return 1
+    fi
+}
+
+getSharedCfg()
+{
+
+    local project_code=$1
+
+    cd $DEV_DOCKER_HOME
+
+    # https://www.cyberciti.biz/faq/how-to-extract-substring-in-bash/
+    local dbVer=${project_code:2}
+    case "$dbVer" in
+        100|101|102)
+            local dbmsName='MariaDB'
+            local dbVersion="${dbVer:0:2}.${dbVer:2}"
+            ;;
+        *)
+            local dbmsName='MySQL'
+            local dbVersion="${dbVer:0:1}.${dbVer:1}"
+            ;;
+    esac
+
+    # https://www.shellscript.sh/tips/case/
+    local dbSlug=${dbmsName,,}
+    local phpVer=${project_code:0:2}
+    local phpVersion="${phpVer:0:1}.${phpVer:1}"
+
+    export DBSERVER_VERSION=$dbVersion
+    export WEBSERVER_VERSION="2.4"
+    export PHP_VERSION=$phpVersion
+
+    export COMPOSE_FILE=./php-apache/docker-compose-base.yml
+    export COMPOSE_PROJECT_NAME="shared${project_code}"
+
+    # 33 + engine version: 33101, 33102, 33103, 33057, 33080, etc.
+    export MYSQL_PORT="33$dbVer"
+
+    export HOST_DB_PATH="$DEV_STORE/db/mariadb$dbVer"
+    export HOST_WWW_PATH="$WEB_STORE"
+    export CONTAINER_WWW_PATH="/var/www/html"
+
+    echo "PHP $phpVersion, $dbmsName $dbVersion, Apache $WEBSERVER_VERSION"
+    echo "--------------------"
+    echo "cmd:  docker-compose $2"
+    echo "path: $HOST_WWW_PATH"
+    echo "--------------------"
+    eval "docker-compose $2"
+
+    unset DBSERVER_VERSION
+    unset WEBSERVER_VERSION
+    unset PHP_VERSION
+    unset COMPOSE_IGNORE_ORPHANS
+    unset COMPOSE_PATH_SEPARATOR
+    unset COMPOSE_FILE
+    unset COMPOSE_PROJECT_NAME
+    unset MYSQL_PORT
+    unset HOST_DB_PATH
+    unset HOST_WWW_PATH
+    unset CONTAINER_WWW_PATH
+}
+
+getDedicatedCfg()
+{
+    # split to array [ 0:code 1:base_url 2:engine 3:db_port 4:base_dir 5:public_dir 6:sass_dir 7:css_dir ]
+    IFS=';' read -ra datas <<< "$1"
+    unset IFS;
+
+    # the docker-compose configuration must be in a 'docker' folder in the same folder as the public root
+    local compose_path="${WEB_STORE}/${datas[4]}/docker"
+    # the database storage must be in a 'db' folder in the same folder as the public root
+    local local_db_path="${WEB_STORE}/${datas[4]}/db"
+    # the files path is fully defined in the csv file
+    local local_www_path="${WEB_STORE}/${datas[4]}/${datas[5]}"
+
+    if [[ ! -d "${local_www_path}" ]]; then
+        mkdir -p ${local_www_path}
+        echo -e "-----------------------\nWEBSITE PATH CREATED: ${local_www_path}"
+    fi
+
+    if [[ ! -d "${local_db_path}" ]]; then
+        mkdir -p ${local_db_path}
+        echo -e "-----------------------\nDATABASE PATH CREATED: ${local_db_path}"
+    fi
+
+    cd ${compose_path}
+
+    local IFS='='
+    local tmp_key=''
+    while read -r line; do
+        [[ -z "$line" || "$line" =~ ^#.*$ ]] && continue
+
+        data=(${line});
+        local key=${data[0]}
+        local value=${data[1]}
+        if [[ $key == $tmp_key ]]; then
+            echo "-----------------------------------> duplicate key in .env file: $key"
+        elif [[ $key == DBSERVER_VERSION ]]; then
+            local db_server="MariaDB $value"
+        #elif [[ $key == DBSERVER_VERSION ]]; then
+        #    local db_server="MySQL $value"
+        elif [[ $key == WEBSERVER_VERSION ]]; then
+            local web_server="Apache $value"
+        #elif [[ $key == WEBSERVER_VERSION ]]; then
+        #    local web_server="Nginx $value"
+        elif [[ $key == PHP_VERSION ]]; then
+            local php_server="PHP $value"
+        elif [[ $key == FPM_TAG ]]; then
+            local fpm_tag="$value"
+        fi
+        tmp_key=$key
+    done < "$DEV_DOCKER_HOME/default/.env"
+
+    local command_string=''
+    local tmp_key=''
+    while read -r line; do
+        unset IFS;
+        [[ -z "$line" || "$line" =~ ^#.*$ ]] && continue
+        command_string="${command_string} $line";
+
+        IFS='=' data=(${line});
+
+        local key=${data[0]}
+        local value=${data[1]}
+        if [[ $key == $tmp_key ]]; then
+            echo "-----------------------------------> duplicate key in .env file: $key"
+        elif [[ $key == DBSERVER_VERSION ]]; then
+            local db_server="MariaDB $value"
+        #elif [[ $key == DBSERVER_VERSION ]]; then
+        #    local db_server="MySQL $value"
+        elif [[ $key == WEBSERVER_VERSION ]]; then
+            local web_server="Apache $value"
+        #elif [[ $key == WEBSERVER_VERSION ]]; then
+        #    local web_server="Nginx $value"
+        elif [[ $key == PHP_VERSION ]]; then
+            local php_server="PHP $value"
+        elif [[ $key == FPM_TAG ]]; then
+            local fpm_tag="$value"
+        fi
+        tmp_key=$key
+    done < "${compose_path}/.env-override"
+    unset IFS;
+
+    command_string="COMPOSE_PROJECT_NAME='${datas[0]}' BASE_URL='${datas[1]}' HOST_WWW_PATH='${local_www_path}' DB_NAME='${datas[1]//./_}' DB_PORT='${datas[3]}' ${command_string} docker-compose $2"
+
+    echo -e "${cyan_txt}${datas[1]} [$php_server, $db_server,  $web_server]${rste}"
+
+    echo "-----------"
+    echo "www: ${local_www_path}"
+    echo "db : ${local_db_path}"
+    echo "cfg: ${compose_path}"
+    echo -e "cmd: ${cyan_txt}${command_string}${rste}"
+    eval "${command_string}"
+}
+
+getPrj()
+{
+    if [ -z "$1" ]; then
+        1>&2 echo "PLEASE INPUT A LOCAL DEVELOPMENT DOMAIN CODE!"
+    else
+        local project_code="$1"
+
+        local domains_file="$DEV_DOMAINS_LIST_PATH"
+        local project_data=$(sed -n -e "/^$project_code;/p" "$domains_file")
+
+        if [ -z "$project_data" ]; then
+            1>&2 echo -e "PROJECT '${magenta_txt}$project_code${rste}' CODE NOT FOUND!"
+        else
+            echo "$project_data"
+        fi
+    fi
+}
+
+pon()
+{
+    local command="docker-compose up -d --no-recreate"
+    cd $DEV_DOCKER_HOME/supervise
+    echo -e "${cyan_txt}Starting Traefik...${rste}"
+
+    echo -e "cmd: ${cyan_txt}${command}${rste}"
+    eval "$command"
+    echo ""
+}
+
+poff()
+{
+    local command="docker-compose down"
+    cd $DEV_DOCKER_HOME/supervise
+    echo -e "${cyan_txt}Stopping Traefik...${rste}"
+
+    echo -e "cmd: ${cyan_txt}${command}${rste}"
+    eval "$command"
+    drm
+    dls
+    echo ""
+}
+
+dlog()
+{
+    while true
+    do
+        if [ -z "$1" ]; then
+            echo "Please input a local development domain code!"
+        else
+            local container=$1
+            break
+        fi
+    done
+
+    docker logs $container
+}
+
+dlogf()
+{
+    while true
+    do
+        if [ -z "$1" ]; then
+            echo "Please input a local development domain code!"
+        else
+            local container=$1
+            break
+        fi
+    done
+
+    docker logs --follow $container
+}
+
+dex()
+{
+    while true
+    do
+        if [ -z "$1" ]; then
+            echo "Please input a local development domain code!"
+        else
+            local container=$1
+            break
+        fi
+    done
+
+    docker exec -it $container bash
+}
+
+dx()
+{
+    while true
+    do
+        if [ -z "$1" ]; then
+            echo "Please input a local development domain code!"
+        else
+            local container=$1
+            break
+        fi
+    done
+
+    docker exec -it $container /bin/sh
+}
+
+dc()
+{
+
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+dc  --  deletes cache files from the specified site.
+
+EXAMPLE:
+    - delete the cache from tenita.e0:
+       dc te0
+
+HELP
+
+    return
+
+    fi
+
+    local project_code="$1"
+    local project_data=$(getPrj $project_code)
+
+    if [ "$project_data" != 0 ]; then
+        IFS=';' datas=(${project_data});
+
+        if [ -z "${datas[2]}" ]; then
+            1>&2 echo "No engine defined!"
+            return 1;
+
+        else
+            local site_path="${WEB_STORE}/${datas[4]}/${datas[5]}"
+            local base_indent_count=${#site_path}
+            local base_indent=$(printf "%-${base_indent_count}s" " ")
+            local base_indent="     $base_indent"
+            echo -e "${cyan_txt}"
+            echo ""
+
+            if [ "${datas[2]}" == 'prestashop' ]; then
+                declare -A paths_to_delete=(
+                    ['app']='cache/*'
+                    ['cache']='class_index.php|*/last_template_flush|cachefs/*|purifier/*|smarty/cache/*|smarty/compile/*|tcpdf/*'
+                    ['config']='xml/*.xml|xml/*/*.xml'
+                    ['img']='tmp/*.jpg'
+                    ['modules']='*/config*.xml'
+                    ['themes']='*/assets/cache/*|*/cache/*'
+                    ['tools']='smarty/cache/*|smarty/compile/*'
+                    ['var']='cache/*'
+                )
+
+                echo "DELETING PRESTASHOP CACHE..."
+
+            elif [ "${datas[2]}" == 'processwire' ]; then
+                declare -A paths_to_delete=(
+                    ['site']='assets/cache/*|assets/sessions/*'
+                )
+
+                echo "DELETING PROCESSWIRE CACHE..."
+
+            fi
+
+            echo ""
+            echo -e "   $site_path"
+
+            cd $site_path
+
+            for key in "${!paths_to_delete[@]}"; do
+                IFS='|' read -ra items_to_delete <<< "${paths_to_delete[$key]}"
+                local is_first=1
+                local key_length=${#key}
+                (( key_length++ ))
+                for item_to_delete in "${items_to_delete[@]}"; do
+                    printf "$base_indent"
+                    if (( $is_first > 1 )); then
+                        printf "%-${key_length}s" " "
+                    else
+                        printf "/$key"
+                    fi
+                    printf "/$item_to_delete...\n"
+                    echo -e "${rste}"
+                    find $site_path/$key/$item_to_delete ! -name "index.php" -delete -print 2>/dev/null
+                    echo -e "${cyan_txt}"
+                    local is_first=0
+                done
+            done
+
+            echo ""
+
+        fi
+    fi
+
+    echo -e "${rste}"
+}
+
+dtags()
+{
+
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+dtags  --  list all tags for a Docker image on a remote registry.
+
+EXAMPLE:
+    - list all tags for ubuntu:
+       dtags ubuntu
+
+    - list all php tags containing apache:
+       dtags php apache
+
+HELP
+
+    return
+
+    fi
+
+    image="$1"
+    tags=`wget -q https://registry.hub.docker.com/v1/repositories/${image}/tags -O -  | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}'`
+
+    if [ -n "$2" ]; then
+        tags=` echo "${tags}" | grep "$2" `
+    fi
+
+    echo "${tags}"
+}
+
+dellogs()
+{
+
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+WARNING! DANGEROUS COMMAND!
+
+dellogs  --  recursively deletes all .log files in the supplied paths.
+
+EXAMPLES:
+    dellogs .
+    dellogs /media/dev/www
+    dellogs /media/dev/www/client /media/dev/www/mein
+
+HELP
+
+    return
+
+    fi
+
+    echo -e "${cyan_txt}"
+
+    for path_to_clean in "$@"; do
+            echo "Deleting log files from $path_to_clean..."
+            find $path_to_clean -type f -name "*.log" ! -name "index.php" -delete -print 2>/dev/null
+    done
+
+    echo -e "${rste}"
+}
+
+delexthere()
+{
+
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+WARNING! DANGEROUS COMMAND!
+
+delexthere  --  recursively deletes all files with specified extensions in current directory.
+
+EXAMPLES:
+    delexthere DS_Store log
+
+HELP
+
+    return
+
+    fi
+
+    local types=''
+    local types_list
+    for type in "$@"; do
+        types="${types:+$types\|}$type"
+        types_list="${types_list:+$types_list, }.$type"
+    done
+
+    echo -e "${cyan_txt}"
+    echo "Deleting from current directory files with the following extensions: $types_list..."
+
+    find . -type f -regex ".*/.*\.\($types\)" -delete -print 2>/dev/null
+
+    echo -e "${rste}"
+}
+
+# Delete all files except jpg, png and gif
+# First check with ls -l
+#find . -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.gif' -print0 | xargs -0 ls -l
+# Ok: delete
+#find . -type f ! -name '*.jpg' ! -name '*.png' ! -name '*.gif' -print0 | xargs -0 rm -vf
+# Delete all empty left-over directories:
+#find . -type d -empty -print0 | xargs -0 rmdir -v
+
+jpgtest()
+{
+    find . -iname "*.jpg" -exec jpeginfo -c {} \; | grep -E "WARNING|ERROR"
+}
+
+imgopt()
+{
+    optlog=".imgopt_$(date "+%Y-%m-%d-%H%M").log"
+
+    echo -e "\n----------------------------------------------------> Optimizing JPGs..." >> "$optlog"
+    # jpegoptim -m<quality>, --max=<quality>
+    #     set maximum image quality factor
+    #     (disables lossless optimization mode, which is by default on)
+    #     valid quality values: 0 - 100
+    find . -name "*.jpg" -exec jpegoptim -m85 -s --all-progressive --verbose '{}' \; &>> "$optlog"
+
+    echo -e "\n----------------------------------------------------> Optimizing PNGs..." >> "$optlog"
+    # optipng -o <level>
+    #     optimization level (0-7)
+    #     [default: 2]
+    find . -name "*.png" -exec optipng -o2 -v '{}' \; &>> "$optlog"
+
+    echo -e "\n----------------------------------------------------> Optimizing GIFs..." >> "$optlog"
+    find . -name "*.gif" -exec gifsicle --batch --optimize --verbose '{}' \; &>> "$optlog"
+}
+
+prestacleanimg()
+{
+
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+WARNING! DANGEROUS COMMAND!
+
+prestacleanimg  --  recursively deletes all PrestaShop generated .jpg files in the supplied paths.
+
+EXAMPLES:
+    prestacleanimg .
+    prestacleanimg /media/do/www
+    prestacleanimg /media/do/www/client /media/do/www/mein
+
+HELP
+
+    return
+
+    fi
+
+    echo -e "${cyan_txt}"
+
+    echo "Deleting image files from $1..."
+    find $1 -type f -name "*-*_default.jpg" ! -name "index.php" -delete -print >> "imgclean_$(date "+%Y-%m-%d-%H%M").log"
+
+    echo -e "${rste}"
+    echo ""
+}
+
+prestafixpngproducts()
+{
+    testlog="imgtest_$(date "+%Y-%m-%d-%H%M").log"
+    fixlog="imgfix_$(date "+%Y-%m-%d-%H%M").log"
+
+    # test if image is a real jpg and log errors
+    imgtest > "$testlog"
+
+    i=1
+    while IFS= read -r line; do
+        [[ $line != \./p/* ]] && continue
+        echo "--------" >> "$fixlog"
+
+        # get only the path part of the line
+        jpgpath=$(echo "$line" | awk '{print $1;}')
+        # change extension to png
+        pngpath="${jpgpath%.*}.png"
+        # copy jpg to png
+        cp -v "$jpgpath" "$pngpath" >> "$fixlog"
+        # delete the old png with jpg extension
+        rm -v "$jpgpath" >> "$fixlog"
+        # trim the transparency and convert it to jpg
+        convert "$pngpath" -trim +repage -quality 85 -verbose "$jpgpath" 2>> "$fixlog"
+        # delete the png
+        rm -v "$pngpath" >> "$fixlog"
+
+        echo "--------" >> "$fixlog"
+        i=$((i+1))
+    done < "$testlog"
+}
+
+prestatrimjpg()
+{
+    find . -name '*.jpg' -exec convert -trim +repage -quality 85 -verbose {} + 2>> "jpgtrim_$(date "+%Y-%m-%d-%H%M").log"
+}
+
+ext2lower()
+{
+    if [[ $# -lt 1 ]]; then
+        cat << HELP
+
+ext2lower  --  recursively converts all files' extensions to lower case, in the supplied path.
+
+EXAMPLES:
+    ext2lower .
+    ext2lower /media/do/www
+
+HELP
+
+    return
+
+    fi
+
+    echo -e "${cyan_txt}"
+
+    find . -name '*.*' -type f -exec bash -c 'base=${0%.*} ext=${0##*.} a=$base.${ext,,}; [[ "$a" != "$0" ]] && mv -- "$0" "$a"' {} \;
+
+    echo -e "${rste}"
+}
+
+sw()
+{
+
+    if [[ $# -lt 1 ]]; then
+
+        cat << HELP
+
+sw  --  sass watch shortcut; provide a site code and an optional dev environment code.
+
+EXAMPLES:
+    sw ae0
+    sw ae0 dev
+or
+    sw ec0 v1
+    sw ec0 dev v1
+
+HELP
+
+    return
+
+    fi
+
+    if [[ $# -eq 2 ]] && [[ "$2" == 'dev' ]]; then
+        local dev_env="$2"
+    else
+        local dev_env='prod'
+        local subdir="$2"
+    fi
+
+    if [[ $# -eq 3 ]]; then
+        if [[ "$*" == * dev * ]]; then
+            local dev_env="$2"
+        else
+            local dev_env='prod'
+        fi
+        local subdir="$3"
+    fi
+
+
+    case "$dev_env" in
+        'dev')
+            local style='expanded'
+            ;;
+        *)
+            local style='compressed'
+            ;;
+    esac
+
+    local project_data=$(getPrj $1)
+
+    if [ "$project_data" != 0 ]; then
+        # split to array [ 0:code 1:base_url 2:engine 3:db_port 4:base_dir 5:public_dir 6:sass_dir 7:css_dir ]
+        IFS=';' datas=(${project_data});
+
+        [ -z "${datas[4]}" ] && { echo "MISSING BASE PATH!"; return 1; }
+        [ -z "${datas[5]}" ] && { echo "MISSING PUBLIC PATH!"; return 1; }
+        [ -z "${datas[6]}" ] && { echo "MISSING SASS SOURCE PATH!"; return 1; }
+        if [[ $# -lt 3 ]]; then
+            [ -z "${datas[7]}" ] && { echo "MISSING SASS TARGET PATH!"; return 1; }
+        fi
+
+        case "${datas[2]}" in
+            'processwire')
+                local input_path="${WEB_STORE}/${datas[4]}/${datas[6]}/${subdir}/static/sass/input"
+                local output_path="${WEB_STORE}/${datas[4]}/${datas[6]}/${subdir}/static/css"
+                ;;
+            'prestashop'|'phpbb')
+                local input_path="${WEB_STORE}/${datas[4]}/${datas[6]}"
+                local output_path="${WEB_STORE}/${datas[4]}/${datas[5]}/${datas[7]}"
+                ;;
+        esac
+        sass --watch --poll "$input_path":"$output_path" --style "$style"
+    fi
+}
+
+bakprj()
+{
+
+    if [[ $# -lt 1 ]]; then
+
+        cat << HELP
+
+bakprj  --  backup for a project; needs the project code.
+
+EXAMPLES:
+    bakprj te0
+
+HELP
+
+    return
+
+    fi
+
+    local project_code="$1"
+    local project_data=$( getPrj "$project_code" )
+
+    if [ "$project_data" != 0 ]; then
+        # split to array [ 0:code 1:base_url 2:engine 3:db_port 4:base_dir 5:public_dir 6:sass_dir 7:css_dir ]
+        IFS=';' datas=(${project_data});
+
+        [ -z "${datas[1]}" ] && { echo "MISSING BASE URL!"; return 1; }
+        [ -z "${datas[3]}" ] && { echo "MISSING DATABASE PORT!"; return 1; }
+        [ -z "${datas[4]}" ] && { echo "MISSING BASE PATH!"; return 1; }
+        [ -z "${datas[5]}" ] && { echo "MISSING PUBLIC PATH!"; return 1; }
+
+        local database_name="${datas[1]//./_}"
+        local backup_name="${database_name}__$( date +"%Y-%m-%d-%H%M%S" )"
+
+        mysqldump \
+            --defaults-extra-file=${DEV_DOCKER_HOME}/default/.db.cnf \
+            --routines \
+            --add-drop-table \
+            --disable-keys \
+            --extended-insert \
+            --column-statistics=0 \
+            -uroot --host=127.0.0.1 --port="${datas[3]}" \
+            "$database_name"  |  pv  | \
+            gzip -c > "${TMP_MEIN}/${backup_name}.sql.gz"
+        dc "$project_code"
+        cd ${WEB_STORE}/${datas[4]}
+        # https://superuser.com/questions/168749/is-there-a-way-to-see-any-tar-progress-per-file#answer-665181
+        tar cf - "${datas[5]}" | pv -s $(du -sb "./${datas[5]}" | awk '{print $1}') | gzip > "${TMP_MEIN}/${backup_name}.tar.gz"
+    fi
+}
+
+ytdl()
+{
+    if [[ $# -lt 1 ]] || [[ "$1" == '--help' ]]; then
+
+        cat << HELP
+
+youtube-dl (https://github.com/ytdl-org/youtube-dl) alias
+
+Usage:  ytdl v                              shows the application's version info
+        ytdl VIDEOURL                       downloads the video
+        ytdl f VIDEOURL                     queries the video for the available formats
+        ytdl FORMAT VIDEOURL [sub] [sane]   downloads the video with parameters
+
+v       "--version"
+f       "--list-formats"
+sub     optional, "--write-auto-sub --convert-subs srt" (writes automatically generated subtitle file, YouTube only)
+sane    optional, "--restrict-filenames" (restricts the filenames to only ASCII characters, and avoid "&" and spaces)
+
+FORMAT  one of the available formats from the "youtube-dl -F VIDEOURL" query
+
+
+EXAMPLES:
+    ytdl v
+        translates into
+    youtube-dl --version
+
+    ytdl f https://www.youtube.com/watch?v=5jSB-rVZ0aU
+        translates into
+    youtube-dl -F https://www.youtube.com/watch?v=5jSB-rVZ0aU
+
+    ytdl 22 https://www.youtube.com/watch?v=5jSB-rVZ0aU
+        translates into
+    youtube-dl --format 22 https://www.youtube.com/watch?v=5jSB-rVZ0aU
+
+    ytdl best https://www.youtube.com/watch?v=5jSB-rVZ0aU
+        translates into
+    youtube-dl --format bestvideo+bestaudio https://www.youtube.com/watch?v=5jSB-rVZ0aU
+
+    ytdl 137+140 https://www.youtube.com/watch?v=5jSB-rVZ0aU
+        translates into
+    youtube-dl --format 137+140 https://www.youtube.com/watch?v=5jSB-rVZ0aU
+
+    ytdl 22 https://www.youtube.com/watch?v=5jSB-rVZ0aU sub sane
+        translates into
+    youtube-dl --format 22 https://www.youtube.com/watch?v=5jSB-rVZ0aU --write-auto-sub --convert-subs srt --restrict-filenames
+
+------------------------------------------------------------------------
+
+HELP
+
+    youtube-dl --help
+
+    return
+
+    fi
+
+    local url_or_option=''
+    local format=''
+    local title=''
+    local sub=''
+    local sane=''
+    if [[ $# -eq 1 ]]; then
+        case "$1" in
+            "v")
+                url_or_option='--version'
+                ;;
+            *)
+                url_or_option="$1"
+                ;;
+        esac
+    else
+        url_or_option="$2"
+
+        if [[ "$1" == 'f' ]]; then
+            format='--list-formats'
+        else
+            if [[ "$1" == 'best' ]]; then
+                format='--format bestvideo+bestaudio'
+            elif [[ "$1" == 'bestaudio' ]]; then
+                format='--format bestaudio'
+            else
+                format="--format $1"
+            fi
+
+            title='-o %(title)s__%(id)s.%(ext)s'
+
+        fi
+
+        if [[ "$*" == *sub* ]]; then
+            sub='--write-auto-sub --convert-subs srt'
+        fi
+
+        if [[ "$*" == *sane* ]]; then
+            sane='--restrict-filenames'
+        fi
+    fi
+
+    echo -e "\nCommand: youtube-dl ${format} ${title} ${sub} ${sane} ${url_or_option}\n"
+    youtube-dl ${format} ${title} ${sub} ${sane} ${url_or_option}
+}
+
+sri()
+{
+    if [[ $# -lt 1 ]] || [[ "$1" == '--help' ]]; then
+
+        cat << HELP
+
+Generates a Subresource Integrity hash (https://www.smashingmagazine.com/2019/04/understanding-subresource-integrity/) and copies it to clipboard
+
+Usage: sri FILENAME [ALGORITHM optional]
+
+FILENAME    name of the file to have the hash calculated
+ALGORITHM   used algorithm, i.e. SHA384 (default), SHA256, etc.
+
+EXAMPLES:
+    sri bootstrap.min.css
+        translates into
+    cat FILENAME | openssl dgst -sha384 -binary | openssl base64 -A
+
+    sri bootstrap.min.css sha256
+        translates into
+    cat FILENAME | openssl dgst -sha256 -binary | openssl base64 -A
+
+HELP
+
+    return
+
+    fi
+
+    local filename=$1
+    local algorithm="sha384"
+    if [[ $# -gt 1 ]]; then
+        local algorithm=$2
+    fi
+
+    echo -n "$algorithm-"$(openssl dgst -$algorithm -binary "$filename" | openssl base64 -A) | xclip -selection clipboard
+}
+
+phpco()
+{
+        cat << HELP
+
+Does a full check of all .php files in the current directory for PHP 7.2 compatibility.
+Calls:   phpco -p --colors --extensions=php --runtime-set testVersion 7.2 .
+
+HELP
+
+    docker run --init -v $PWD:/mnt/src:cached --rm -u "$(id -u):$(id -g)" frbit/phpco:latest $@; return $?;
+}
+
+# .env loading in the shell
+# https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs/19331521#answer-34093548
+dotenv () {
+    set -a
+    [ -f .env ] && . .env
+    set +a
+}
+
+abplot()
+{
+    if [[ $# -lt 1 ]] || [[ "$1" == '--help' ]]; then
+        cat << HELP
+
+This example command will do an Apache Benchmark and create a plot from the data.
+
+Usage: abplot example.com u10 r20 https keepalive
+
+HELP
+
+    return
+
+    fi
+
+    protocol="http"
+    keepalive=''
+    users_count=10
+    requests_per_user=20
+
+    #ab_command="ab -n 40 -c 10"
+
+    if [[ $# -gt 1 ]]; then
+        for arg in "$@"; do
+            if [[ "$arg" == 'https' ]]; then
+                protocol="https"
+            fi
+            if [[ "$arg" == "keepalive" ]]; then
+                keepalive="-k"
+            fi
+            if [[ "$arg" =~ u[0-9]+ ]]; then
+                users_count="${arg:1}"
+            fi
+            if [[ "$arg" =~ r[0-9]+ ]]; then
+                requests_per_user="${arg:1}"
+            fi
+        done
+    fi
+
+    requests=$((users_count * requests_per_user))
+    test_name="${1}-${protocol}-${users_count}x${users_count}-$(date "+%y%m%d%H%M%S")"
+
+    ab_command="ab -n ${requests} -c ${users_count} ${keepalive} -g ${test_name}.data ${protocol}://${1}/"
+
+    eval "${ab_command}"
+
+    #gnuplot -e "set terminal png size 1420, 800; set title '${ab_command}'; set ticslevel 0; set grid y; set logscale y; set yrange [0:10000]; set xlabel 'request index'; set ylabel 'response time (ms)'; unset key; plot '${test_name}.data' using 9 smooth sbezier with lines" > "${test_name}.png"
+    gnuplot -e "set terminal png size 1420, 800; set title '${ab_command}'; set ticslevel 0; set grid y; set yrange [0:10000]; set xlabel 'request index'; set ylabel 'response time (ms)'; unset key; plot '${test_name}.data' using 9" > "${test_name}.png"
+}
+
+wget-site()
+{
+    if [[ $# -lt 1 ]] || [[ $1 == '--help' ]]; then
+        cat << HELP
+
+This example command will download the complete website from https://electrosmash.com
+
+    wget-size electrosmash.com
+        alias for
+    wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains electrosmash.com --no-parent https://electrosmash.com
+
+    wget-size electrosmash.com http  www
+        alias for
+    wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains electrosmash.com --no-parent http://www.electrosmash.com
+
+Example with exclude:
+
+    wget \
+        --recursive \
+        --show-progress \
+        --no-clobber \
+        --page-requisites \
+        --html-extension \
+        --convert-links \
+        --restrict-file-names=windows \
+        --domains 'electrosmash.com' \
+        --exclude-directories '/forum' \
+        --no-parent \
+            'https://www.electrosmash.com'
+
+HELP
+
+    return
+
+    fi
+
+    local domain="$1"
+    local protocol='https'
+    local subdomain=''
+
+    if [[ $# -gt 1 ]]; then
+        for arg in "$@"; do
+            if [[ "$arg" == 'http' ]]; then
+                protocol="http"
+            fi
+            if [[ "$arg" == 'www' ]]; then
+                subdomain="www."
+            fi
+        done
+    fi
+
+   wget \
+        --recursive \
+        --no-clobber \
+        --page-requisites \
+        --html-extension \
+        --convert-links \
+        --restrict-file-names=windows \
+        --domains "${domain}" \
+        --no-parent \
+            "${protocol}://${subdomain}${domain}"
+}
+
+convert-heif()
+{
+    if [[ $# -lt 1 ]] || [[ $1 == '--help' ]]; then
+        cat << HELP
+
+Alias for
+
+    heif-convert PATH
+
+HELP
+
+    return
+
+    fi
+
+    cd "$1" && for f in *.HEIC; do echo "Converting $f..."; heif-convert $f $f.jpg; done;
+}
+
+# For optimizing SVGs in the the Plasma theme
+svgopt()
+{
+    for f in *.svg; do
+        echo "Optimizing ${f}..."
+        scour --set-precision=8 --enable-viewboxing --enable-comment-stripping --remove-descriptive-elements --strip-xml-space --strip-xml-prolog --nindent=4 $f tmp.svg
+        mv tmp.svg $f
+    done
+}
